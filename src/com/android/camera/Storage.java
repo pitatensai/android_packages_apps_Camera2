@@ -311,11 +311,14 @@ public class Storage {
      * @return The size of the file. -1 if failed.
      */
     public static long writeFile(String path, byte[] jpeg, ExifInterface exif) throws IOException {
-        if (path.startsWith("/storage") && !path.startsWith(FLASH_DIR))
-            path = path.replaceFirst("/storage/" , "/mnt/media_rw/");
         if (!createDirectoryIfNeeded(path)) {
             Log.e(TAG, "Failed to create parent directory for file: " + path);
-            return -1;
+            if (path.startsWith("/storage") && !path.startsWith(FLASH_DIR))
+                path = path.replaceFirst("/storage/" , "/mnt/media_rw/");
+            if (!createDirectoryIfNeeded(path)) {
+                Log.e(TAG, "Failed to create parent directory for file: " + path);
+                return -1;
+            }
         }
         if (exif != null) {
                 exif.writeExif(jpeg, path);
@@ -512,13 +515,19 @@ public class Storage {
             return UNAVAILABLE;
         }
         String directory = DIRECTORY;
-        if (directory.startsWith("/storage") && !directory.startsWith(FLASH_DIR))
-            directory = directory.replaceFirst("/storage/" , "/mnt/media_rw/");
         File dir = new File(directory);
         dir.mkdirs();
+        Log.d(TAG, directory + " can write:" + (new File(directory).canWrite()));
         if (!dir.isDirectory() || !dir.canWrite()) {
             Log.e(TAG, "DIRECTORY:" + dir.getPath() + " UNAVAILABLE");
-            return UNAVAILABLE;
+            if (directory.startsWith("/storage") && !directory.startsWith(FLASH_DIR))
+                directory = directory.replaceFirst("/storage/" , "/mnt/media_rw/");
+            dir = new File(directory);
+            dir.mkdirs();
+            if (!dir.isDirectory() || !dir.canWrite()) {
+                Log.e(TAG, "DIRECTORY:" + dir.getPath() + " UNAVAILABLE");
+                return UNAVAILABLE;
+            }
         }
 
         try {
@@ -534,13 +543,18 @@ public class Storage {
         String directory = DEFAULT_DIRECTORY;
         if (DEFAULT_DIRECTORY.equals(DIRECTORY))
             directory = EXTERNAL_DIRECTORY;
-        if (directory.startsWith("/storage") && !directory.startsWith(FLASH_DIR))
-            directory = directory.replaceFirst("/storage/" , "/mnt/media_rw/");
         File dir = new File(directory);
         dir.mkdirs();
         if (!dir.isDirectory() || !dir.canWrite()) {
             Log.e(TAG, "getOtherAvailableSpace DIRECTORY:" + dir.getPath() + " UNAVAILABLE");
-            return UNAVAILABLE;
+            if (directory.startsWith("/storage") && !directory.startsWith(FLASH_DIR))
+                directory = directory.replaceFirst("/storage/" , "/mnt/media_rw/");
+            dir = new File(directory);
+            dir.mkdirs();
+            if (!dir.isDirectory() || !dir.canWrite()) {
+                Log.e(TAG, "getOtherAvailableSpace DIRECTORY:" + dir.getPath() + " UNAVAILABLE");
+                return UNAVAILABLE;
+            }
         }
 
         try {

@@ -1378,7 +1378,7 @@ public class VideoModule extends CameraModule
             mMediaRecorder.setOutputFile(mVideoFileDescriptor.getFileDescriptor());
         } else {
             generateVideoFilename(mProfile.fileFormat);
-            if (mVideoFilename.startsWith("/storage") && !mVideoFilename.startsWith(Storage.FLASH_DIR))
+            if (mVideoFilename.startsWith("/storage") && !mVideoFilename.startsWith(Storage.FLASH_DIR) && !(new File(Storage.EXTENAL_SD).canWrite()))
                 mMediaRecorder.setOutputFile(mVideoFilename.replaceFirst("/storage/" , "/mnt/media_rw/"));
             else
                 mMediaRecorder.setOutputFile(mVideoFilename);
@@ -1459,7 +1459,7 @@ public class VideoModule extends CameraModule
         mCurrentVideoValues.put(Video.Media.DATE_TAKEN, dateTaken);
         mCurrentVideoValues.put(MediaColumns.DATE_MODIFIED, dateTaken / 1000);
         mCurrentVideoValues.put(Video.Media.MIME_TYPE, mime);
-        mCurrentVideoValues.put(Video.Media.DATA, path);
+        mCurrentVideoValues.put(Video.Media.DATA, tmpPath);
         mCurrentVideoValues.put(Video.Media.WIDTH, mProfile.videoFrameWidth);
         mCurrentVideoValues.put(Video.Media.HEIGHT, mProfile.videoFrameHeight);
         mCurrentVideoValues.put(Video.Media.RESOLUTION,
