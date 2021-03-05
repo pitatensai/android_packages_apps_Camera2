@@ -1272,9 +1272,9 @@ public class VideoModule extends CameraModule
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_CAMERA:
+            /*case KeyEvent.KEYCODE_CAMERA:
                 onShutterButtonClick();
-                return true;
+                return true;*/
             case KeyEvent.KEYCODE_MENU:
                 // Consume menu button presses during capture.
                 return mMediaRecorderRecording;
