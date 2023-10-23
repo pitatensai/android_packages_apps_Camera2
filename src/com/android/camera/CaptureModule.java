@@ -709,8 +709,9 @@ public class CaptureModule extends CameraModule implements
             if (intent.getBooleanExtra("android.intent.extra.USE_FRONT_CAMERA", false) ||
                     intent.getBooleanExtra("com.google.assistant.extra.USE_FRONT_CAMERA", false))
                 mCameraFacing = Facing.FRONT;
-            else
-                mCameraFacing = Facing.BACK;
+            //Sovle the problem that the CameraFacing is Back by double clicking the power key.
+            /*else
+                mCameraFacing = Facing.BACK;*/
         }
         if (mShowErrorAndFinish) {
             return;
@@ -1383,6 +1384,7 @@ public class CaptureModule extends CameraModule implements
         Size previewBufferSize = mCamera.pickPreviewSize(mPictureSize, mContext);
         mPreviewBufferWidth = previewBufferSize.getWidth();
         mPreviewBufferHeight = previewBufferSize.getHeight();
+        Log.d(TAG,"picturesize:" + mPictureSize + ",previewBuffer:" + mPreviewBufferWidth + "x" + mPreviewBufferHeight);
 
         // Workaround for N4 TextureView/HAL issues b/19271661 for 16:9 preview
         // streams.
